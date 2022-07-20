@@ -3,16 +3,18 @@ import logging
 import os
 from typing import Optional
 
-import coloredlogs
+import coloredlogs  # type: ignore
 import typer
 
 from {{cookiecutter.package_name}} import __version__
+
 
 logger = logging.getLogger("{{cookiecutter.package_name}}")
 app = typer.Typer()
 
 
 def version_callback(value: bool) -> None:
+    """Prints current version and exits."""
     if value:
         typer.echo(f"{{cookiecutter.project_name}}: {__version__}")
         raise typer.Exit()
@@ -48,6 +50,7 @@ def cli(
 
 
 def main() -> None:
+    """Main entrypoint."""
     app()
 
 
