@@ -45,10 +45,13 @@
 [cookiecutter]: https://github.com/audreyr/cookiecutter
 [hypermodern python]: https://medium.com/@cjolowicz/hypermodern-python-d44485d9d769
 
+## Fork
+This is a fork of https://github.com/cjolowicz/cookiecutter-hypermodern-python
+
 ## Usage
 
 ```console
-$ cookiecutter gh:cjolowicz/cookiecutter-hypermodern-python --checkout=2022.6.3
+$ cookiecutter gh:schubergphilis/cookiecutter-hypermodern-python
 ```
 
 ## Features
@@ -59,7 +62,7 @@ $ cookiecutter gh:cjolowicz/cookiecutter-hypermodern-python --checkout=2022.6.3
 - Test automation with [Nox]
 - Linting with [pre-commit] and [Flake8]
 - Continuous integration with [GitHub Actions]
-- Documentation with [Sphinx], [MyST], and [Read the Docs] using the [furo] theme
+- Documentation with [Sphinx] and [MyST] using the [furo] theme
 - Automated uploads to [PyPI] and [TestPyPI]
 - Automated release notes with [Release Drafter]
 - Automated dependency updates with [Dependabot]
@@ -67,7 +70,6 @@ $ cookiecutter gh:cjolowicz/cookiecutter-hypermodern-python --checkout=2022.6.3
 - Import sorting with [isort]
 - Testing with [pytest]
 - Code coverage with [Coverage.py]
-- Coverage reporting with [Codecov]
 - Command-line interface with [Click]
 - Static type-checking with [mypy]
 - Runtime type-checking with [Typeguard]
@@ -102,7 +104,6 @@ The template supports Python 3.7, 3.8, 3.9, and 3.10.
 [pypi]: https://pypi.org/
 [pytest]: https://docs.pytest.org/en/latest/
 [pyupgrade]: https://github.com/asottile/pyupgrade
-[read the docs]: https://readthedocs.org/
 [release drafter]: https://github.com/release-drafter/release-drafter
 [safety]: https://github.com/pyupio/safety
 [sphinx]: http://www.sphinx-doc.org/
