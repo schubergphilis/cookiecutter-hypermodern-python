@@ -48,6 +48,16 @@
 ## Fork
 This is a fork of https://github.com/cjolowicz/cookiecutter-hypermodern-python
 
+- It removes integrations with public services ReadTheDocs and codecov.io, making it more suitable for private projects
+- Replaces Release Drafter & Labeler with [python-semantic-release](https://github.com/relekang/python-semantic-release)
+- Enforces [Conventional Commits](https://www.conventionalcommits.org/) style using [gitlint](https://github.com/jorisroovers/gitlint)
+- Replaces click with [typer](https://github.com/tiangolo/typer)
+- Adds [coloredlogs](https://coloredlogs.readthedocs.io/en/latest/) for logging
+
+## Work in progress
+Check out the `aws-specific` [branch](https://github.com/schubergphilis/cookiecutter-hypermodern-python/tree/aws-specific)
+for more features for AWS - such as deploying to AWS CodeArtifact, preparing lambda deployment bundles and so on.
+
 ## Usage
 
 ```console
