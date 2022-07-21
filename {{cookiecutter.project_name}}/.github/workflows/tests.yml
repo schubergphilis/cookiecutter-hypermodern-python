@@ -3,8 +3,37 @@ name: Tests
 on:
   - push
   - pull_request
+  - workflow_dispatch
 
 jobs:
+  conventional-commits:
+    name: Conventional commits style enforcement
+    # Only run this for pull requests
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{"{{"}} github.event.pull_request.head.ref {{"}}"}}
+          fetch-depth: 0
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Upgrade pip
+        run: |
+          pip install --constraint=.github/workflows/constraints.txt pip
+          pip --version
+      - name: Install gitlint
+        run: |
+          pip install --constraint=.github/workflows/constraints.txt gitlint
+          gitlint --version
+      - name: Run gitlint for all commits in the PR
+        run: |
+          git fetch origin
+          gitlint --commits "origin/${GITHUB_BASE_REF}..HEAD"
+
   tests:
     name: ${{"{{"}} matrix.session {{"}}"}} ${{"{{"}} matrix.python {{"}}"}} / ${{"{{"}} matrix.os {{"}}"}}
     runs-on: ${{"{{"}} matrix.os {{"}}"}}

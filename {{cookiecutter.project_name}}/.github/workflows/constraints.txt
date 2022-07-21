@@ -3,3 +3,5 @@ nox==2022.1.7
 nox-poetry==1.0.0
 poetry==1.1.13
 virtualenv==20.15.0
+gitlint==0.17.0
+python-semantic-release==7.29.6
