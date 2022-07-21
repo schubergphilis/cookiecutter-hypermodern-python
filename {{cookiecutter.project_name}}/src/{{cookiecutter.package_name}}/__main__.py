@@ -13,7 +13,7 @@ logger = logging.getLogger("{{cookiecutter.package_name}}")
 app = typer.Typer()
 
 
-def version_callback(value: bool) -> None:
+def version_callback(value: Optional[bool]) -> None:
     """Prints current version and exits."""
     if value:
         typer.echo(f"{{cookiecutter.project_name}}: {__version__}")
@@ -43,16 +43,16 @@ def cli(
 
 
 # Sample typer subcommand 'hello'
-# @app.command()
-# def hello() -> None:
-#     """sample command hello"""
-#     logging.info("Hello")
+@app.command()
+def hello() -> None:
+    """Sample command."""
+    logging.info("Hello")
 
 
-def main() -> None:
+def main() -> None:  # pragma: no cover
     """Main entrypoint."""
     app()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     app()
