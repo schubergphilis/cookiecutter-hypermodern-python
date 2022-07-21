@@ -25,7 +25,7 @@ def test_coloredlogs_config_tty(
     runner: CliRunner, monkeypatch: MonkeyPatch, mocker: MockerFixture
 ) -> None:
     """Test tty is only set for CI environment."""
-    mocked_install = mocker.patch("eadf_hp_test.__main__.coloredlogs.install")
+    mocked_install = mocker.patch("{{cookiecutter.package_name}}.__main__.coloredlogs.install")
 
     monkeypatch.delenv("CI", raising=False)
     result = runner.invoke(app, ["--log-level=INFO", "hello"])
@@ -42,9 +42,9 @@ def test_coloredlogs_log_level_warn(runner: CliRunner) -> None:
     """Test special handling for DEBUG logging."""
     runner.invoke(app, ["--log-level=WARN", "hello"])
     assert logging.getLogger().getEffectiveLevel() == logging.WARN
-    assert logging.getLogger("eadf_hp_test.__main__").getEffectiveLevel() == logging.WARN
+    assert logging.getLogger("{{cookiecutter.package_name}}.__main__").getEffectiveLevel() == logging.WARN
 
     # Debug logging should be set only for the main logger, with root logger at INFO
     runner.invoke(app, ["--log-level=DEBUG", "hello"])
     assert logging.getLogger().getEffectiveLevel() == logging.INFO
-    assert logging.getLogger("eadf_hp_test.__main__").getEffectiveLevel() == logging.DEBUG
+    assert logging.getLogger("{{cookiecutter.package_name}}.__main__").getEffectiveLevel() == logging.DEBUG
