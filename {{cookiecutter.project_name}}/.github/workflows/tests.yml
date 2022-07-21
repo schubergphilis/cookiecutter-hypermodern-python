@@ -4,6 +4,9 @@ on:
   - push
   - pull_request
   - workflow_dispatch
+permissions:
+  id-token: write # Required for OIDC with AWS
+  contents: read # For checkout
 
 jobs:
   conventional-commits:

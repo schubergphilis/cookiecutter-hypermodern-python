@@ -1,5 +1,6 @@
 [tool.poetry]
 name = "{{cookiecutter.project_name}}"
+# DO NOT modify the version manually - it is updated by python-semantic-release.
 version = "{{cookiecutter.version}}"
 description = "{{cookiecutter.friendly_name}}"
 authors = ["{{cookiecutter.author}} <{{cookiecutter.email}}>"]
@@ -89,8 +90,11 @@ version_toml = ["pyproject.toml:tool.poetry.version"]
 commit_subject = "chore(release): v{version} [skip ci]"
 branch = "main"
 build_command = "poetry build"
-upload_to_pypi = false
 hvcs = "github"
+
+[[tool.poetry.source]]
+name = "{{ cookiecutter.aws_codeartifact_pypi_repo_name }}"
+url = "{{ cookiecutter.aws_codeartifact_pypi_repo_url }}"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
