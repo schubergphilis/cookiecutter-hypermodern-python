@@ -64,11 +64,42 @@ jobs:
       PRE_COMMIT_COLOR: "always"
 
     steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: {{ cookiecutter.aws_region }}
+          role-to-assume: {{ cookiecutter.aws_oidc_role_arn }}
+          role-session-name: {{ cookiecutter.aws_oidc_session_name }}
+
+      - name: Get AWS CodeArtifact Auth Token
+        run: |
+          export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+          $(aws sts assume-role \
+          --role-arn {{ cookiecutter.aws_admin_role_arn }} \
+          --external-id {{ cookiecutter.aws_admin_role_external_id }} \
+          --role-session-name {{ cookiecutter.aws_admin_session_name }} \
+          --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+          --output text))
+
+          CODEARTIFACT_PYPI_URL=$(aws codeartifact get-repository-endpoint \
+          --domain {{ cookiecutter.aws_codeartifact_domain }} \
+          --domain-owner {{ cookiecutter.aws_codeartifact_domain_owner }} \
+          --repository {{ cookiecutter.aws_codeartifact_pypi_repo_name }} \
+          --format pypi --output text)
+
+          CODEARTIFACT_TOKEN=$(aws codeartifact get-authorization-token \
+          --domain {{ cookiecutter.aws_codeartifact_domain }} \
+          --domain-owner {{ cookiecutter.aws_codeartifact_domain_owner }} \
+          --query authorizationToken --output text)
+
+          echo "CODEARTIFACT_PYPI_URL=${CODEARTIFACT_PYPI_URL}" >> $GITHUB_ENV
+          echo "CODEARTIFACT_TOKEN=${CODEARTIFACT_TOKEN}" >> $GITHUB_ENV
+
       - name: Check out the repository
         uses: actions/checkout@v3
 
       - name: Set up Python ${{"{{"}} matrix.python {{"}}"}}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{"{{"}} matrix.python {{"}}"}}
 
@@ -90,6 +121,12 @@ jobs:
         run: |
           pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
+
+      - name: Configure CodeArtifact Auth for Poetry
+        # This is for fetching packages from private repo. The repo URL has to be provided in the
+        # `tool.poetry.source` section of pyproject.toml
+        run: |
+          poetry config http-basic.{{ cookiecutter.aws_codeartifact_pypi_repo_name }} aws ${{"{{"}} env.CODEARTIFACT_TOKEN {{"}}"}}
 
       - name: Install Nox
         run: |
@@ -147,7 +184,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
