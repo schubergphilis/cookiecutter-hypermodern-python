@@ -27,5 +27,6 @@
   "aws_codeartifact_domain": "",
   "aws_codeartifact_domain_owner": "",
   "aws_codeartifact_pypi_repo_name": "",
-  "aws_codeartifact_pypi_repo_url": ""
+  "aws_codeartifact_pypi_repo_url": "",
+  "aws_artifacts_s3url": ""
 }

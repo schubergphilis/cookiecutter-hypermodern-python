@@ -9,6 +9,9 @@ permissions:
   id-token: write # Required for OIDC with AWS
   contents: read # For checkout
 
+env:
+  RELEASE_PYTHON_VERSION: "3.9" # Python version used for the release & lambda bundles
+
 jobs:
   conventional-commits:
     name: Conventional commits style enforcement
@@ -79,7 +82,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: ${{"{{"}} env.RELEASE_PYTHON_VERSION {{"}}"}}
 
       - name: Upgrade pip
         run: |
@@ -100,7 +103,7 @@ jobs:
         # This is for fetching packages from private repo. The repo URL has to be provided in the
         # `tool.poetry.source` section of pyproject.toml
         run: |
-          poetry config http-basic.{{ cookiecutter.aws_codeartifact_pypi_repo_name }} aws ${{"{{"}} env.CODEARTIFACT_TOKEN {{"}}"}}
+          poetry config http-basic.{{ cookiecutter.aws_codeartifact_pypi_repo_name }} aws ${CODEARTIFACT_TOKEN}
 
       - name: Install python-semantic-release
         run: |
@@ -110,9 +113,45 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "action@github.com"
+
           semantic-release publish -v DEBUG -D commit_author="github-actions <action@github.com>" \
-          -D repository_url=${{"{{"}} env.CODEARTIFACT_PYPI_URL {{"}}"}}
+          -D repository_url=${CODEARTIFACT_PYPI_URL}
+
+          echo "NEW_VERSION=$(semantic-release print-version --current)" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{"{{"}} secrets.GH_SEMANTIC_RELEASE_PAT {{"}}"}}
           REPOSITORY_USERNAME: aws
           REPOSITORY_PASSWORD: ${{"{{"}} env.CODEARTIFACT_TOKEN {{"}}"}}
+
+      - name: Create lambda bundles
+        run: |
+          PIP_EXTRA_INDEX_URL=$(sed -e "s^//^//aws:${CODEARTIFACT_TOKEN}@^" <<<"${CODEARTIFACT_PYPI_URL}")
+
+          poetry export --format=requirements.txt --without-hashes -o requirements.txt
+          poetry build --format wheel
+
+          pip install --no-compile --no-deps -r requirements.txt --extra-index-url ${PIP_EXTRA_INDEX_URL} -t layer
+          pip install --no-compile --no-deps ./dist/*.whl -t lambda
+
+          mkdir lambda-bundles
+
+          (cd lambda && zip -r ../lambda-bundles/{{ cookiecutter.project_name }}-${NEW_VERSION}-py${RELEASE_PYTHON_VERSION}.zip .)
+          (cd layer && zip -r ../lambda-bundles/{{ cookiecutter.project_name }}-${NEW_VERSION}-layer-py${RELEASE_PYTHON_VERSION}.zip .)
+
+      - name: Upload lambda bundles to S3
+        run: |
+          export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+          $(aws sts assume-role \
+          --role-arn {{ cookiecutter.aws_admin_role_arn }} \
+          --external-id {{ cookiecutter.aws_admin_role_external_id }} \
+          --role-session-name {{ cookiecutter.aws_admin_session_name }} \
+          --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+          --output text))
+
+          aws s3 cp --recursive --include "*.zip" lambda-bundles/ {{ cookiecutter.aws_artifacts_s3url }}
+
+      - name: Archive lambda bundles
+        uses: actions/upload-artifact@v3
+        with:
+          name: lambda-bundles
+          path: lambda-bundles
