@@ -121,8 +121,7 @@ jobs:
           GH_TOKEN: ${{"{{"}} secrets.GH_SEMANTIC_RELEASE_PAT {{"}}"}}
           REPOSITORY_USERNAME: aws
           REPOSITORY_PASSWORD: ${{"{{"}} env.CODEARTIFACT_TOKEN {{"}}"}}
-
-{% if cookiecutter.create_lambda_bundles == 'Yes' -%}
+{% if cookiecutter.create_lambda_bundles == 'Yes' %}
       - name: Create lambda bundles
         run: |
           PIP_EXTRA_INDEX_URL=$(sed -e "s^//^//aws:${CODEARTIFACT_TOKEN}@^" <<<"${CODEARTIFACT_ENDPOINT}simple/")
@@ -155,4 +154,4 @@ jobs:
         with:
           name: lambda-bundles
           path: lambda-bundles
-{%- endif %}
+{% endif -%}
