@@ -1,6 +1,7 @@
 ---
-substitutions:
-  HPC: "*Hypermodern Python Cookiecutter*"
+myst:
+  substitutions:
+    HPC: "*Hypermodern Python Cookiecutter*"
 ---
 
 # User Guide
@@ -213,8 +214,7 @@ by pointing Cookiecutter to its [GitHub repository][hypermodern python cookiecut
 Use the `--checkout` option with the [current stable release][2022.6.3]:
 
 ```console
-$ cookiecutter gh:cjolowicz/cookiecutter-hypermodern-python \
-  --checkout="2022.6.3"
+$ cookiecutter gh:cjolowicz/cookiecutter-hypermodern-python --checkout="2022.6.3"
 ```
 
 Cookiecutter downloads the template,
@@ -2003,7 +2003,6 @@ The following options are enabled for strictness and enhanced output:
 - {option}`warn_unreachable <mypy --warn-unreachable>`
 - {option}`pretty <mypy --pretty>`
 - {option}`show_column_numbers <mypy --show-column-numbers>`
-- {option}`show_error_codes <mypy --show-error-codes>`
 - {option}`show_error_context <mypy --show-error-context>`
 
 (external-services)=
