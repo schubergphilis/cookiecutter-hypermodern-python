@@ -23,8 +23,8 @@ except ImportError:
 
 
 package = "{{cookiecutter.package_name}}"
-python_versions = ["3.10", "3.9", "3.8"]
-nox.needs_version = ">= 2021.6.6"
+python_versions = ["3.11", "3.10", "3.9"]
+nox.needs_version = ">= 2023.4.22"
 nox.options.sessions = (
     "pre-commit",
     "safety",
