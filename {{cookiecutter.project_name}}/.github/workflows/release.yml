@@ -9,7 +9,7 @@ permissions:
   contents: read # For checkout
 
 env:
-  RELEASE_PYTHON_VERSION: "3.9" # Python version used for the release & lambda bundles
+  RELEASE_PYTHON_VERSION: "3.10" # Python version used for the release & lambda bundles
 
 jobs:
   conventional-commits:
