@@ -5,7 +5,7 @@ from importlib.metadata import version
 
 # This is a fallback for using `importlib.metadata`.
 # DO NOT modify the version manually - it is updated by python-semantic-release
-__static_version = "0.0.0"
+__static_version = "{{cookiecutter.version}}"
 
 try:
     __version__ = version(__name__)
