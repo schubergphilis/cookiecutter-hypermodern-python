@@ -6,8 +6,8 @@ description = "{{cookiecutter.friendly_name}}"
 authors = ["{{cookiecutter.author}} <{{cookiecutter.email}}>"]
 license = "{{cookiecutter.license}}"
 readme = "README.md"
-homepage = "https://github.com/{{cookiecutter.github_user}}/{{cookiecutter.project_name}}"
-repository = "https://github.com/{{cookiecutter.github_user}}/{{cookiecutter.project_name}}"
+homepage = "https://github.com/{{cookiecutter.github_user}}/{{cookiecutter.repo_name}}"
+repository = "https://github.com/{{cookiecutter.github_user}}/{{cookiecutter.repo_name}}"
 {% if cookiecutter.package_name != cookiecutter.project_name.replace('-', '_') -%}
 packages = [
     { include = "{{cookiecutter.package_name}}", from = "src" },
@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/{{cookiecutter.github_user}}/{{cookiecutter.project_name}}/releases"
+Changelog = "https://github.com/{{cookiecutter.github_user}}/{{cookiecutter.repo_name}}/releases"
 
 [tool.poetry.dependencies]
 python = "^3.9"

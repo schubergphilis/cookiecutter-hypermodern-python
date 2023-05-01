@@ -4,7 +4,7 @@ from pathlib import Path
 import tomli
 
 
-PROJECT = Path("{{cookiecutter.project_name}}")
+PROJECT = Path("{{cookiecutter.repo_name}}")
 JINJA_PATTERN = re.compile(r"{%.*%}")
 JINJA_PATTERN2 = re.compile(r"{{[^{]*}}")
 LINE_FORMAT = "   {name:{width}} {description}"
