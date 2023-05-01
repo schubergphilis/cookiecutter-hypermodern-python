@@ -43,12 +43,18 @@ def test_coloredlogs_log_level_warn(runner: CliRunner) -> None:
     runner.invoke(app, ["--log-level=WARN", "hello"])
     assert logging.getLogger().getEffectiveLevel() == logging.WARN
     assert (
-        logging.getLogger("{{cookiecutter.package_name}}.__main__").getEffectiveLevel() == logging.WARN
+            logging.getLogger(
+                "{{cookiecutter.package_name}}.__main__"
+            ).getEffectiveLevel()
+            == logging.WARN
     )
 
     # Debug logging should be set only for the main logger, with root logger at INFO
     runner.invoke(app, ["--log-level=DEBUG", "hello"])
     assert logging.getLogger().getEffectiveLevel() == logging.INFO
     assert (
-        logging.getLogger("{{cookiecutter.package_name}}.__main__").getEffectiveLevel() == logging.DEBUG
+            logging.getLogger(
+                "{{cookiecutter.package_name}}.__main__"
+            ).getEffectiveLevel()
+            == logging.DEBUG
     )
