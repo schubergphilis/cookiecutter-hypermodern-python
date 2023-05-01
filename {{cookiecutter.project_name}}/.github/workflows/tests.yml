@@ -80,18 +80,11 @@ jobs:
           --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
           --output text))
 
-          CODEARTIFACT_PYPI_URL=$(aws codeartifact get-repository-endpoint \
-          --domain {{ cookiecutter.aws_codeartifact_domain }} \
-          --domain-owner {{ cookiecutter.aws_codeartifact_domain_owner }} \
-          --repository {{ cookiecutter.aws_codeartifact_pypi_repo_name }} \
-          --format pypi --output text)
-
           CODEARTIFACT_TOKEN=$(aws codeartifact get-authorization-token \
           --domain {{ cookiecutter.aws_codeartifact_domain }} \
           --domain-owner {{ cookiecutter.aws_codeartifact_domain_owner }} \
           --query authorizationToken --output text)
 
-          echo "CODEARTIFACT_PYPI_URL=${CODEARTIFACT_PYPI_URL}" >> $GITHUB_ENV
           echo "CODEARTIFACT_TOKEN=${CODEARTIFACT_TOKEN}" >> $GITHUB_ENV
 
       - name: Check out the repository

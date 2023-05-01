@@ -58,7 +58,7 @@ jobs:
           --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
           --output text))
 
-          CODEARTIFACT_PYPI_URL=$(aws codeartifact get-repository-endpoint \
+          CODEARTIFACT_ENDPOINT=$(aws codeartifact get-repository-endpoint \
           --domain {{ cookiecutter.aws_codeartifact_domain }} \
           --domain-owner {{ cookiecutter.aws_codeartifact_domain_owner }} \
           --repository {{ cookiecutter.aws_codeartifact_pypi_repo_name }} \
@@ -69,7 +69,7 @@ jobs:
           --domain-owner {{ cookiecutter.aws_codeartifact_domain_owner }} \
           --query authorizationToken --output text)
 
-          echo "CODEARTIFACT_PYPI_URL=${CODEARTIFACT_PYPI_URL}" >> $GITHUB_ENV
+          echo "CODEARTIFACT_ENDPOINT=${CODEARTIFACT_ENDPOINT}" >> $GITHUB_ENV
           echo "CODEARTIFACT_TOKEN=${CODEARTIFACT_TOKEN}" >> $GITHUB_ENV
 
       - name: Check out the repository
@@ -114,7 +114,7 @@ jobs:
           git config --global user.email "action@github.com"
 
           semantic-release publish -v DEBUG -D commit_author="github-actions <action@github.com>" \
-          -D repository_url=${CODEARTIFACT_PYPI_URL}
+          -D repository_url=${CODEARTIFACT_ENDPOINT}
 
           echo "NEW_VERSION=$(semantic-release print-version --current)" >> $GITHUB_ENV
         env:
@@ -125,7 +125,7 @@ jobs:
 {% if cookiecutter.create_lambda_bundles == 'Yes' -%}
       - name: Create lambda bundles
         run: |
-          PIP_EXTRA_INDEX_URL=$(sed -e "s^//^//aws:${CODEARTIFACT_TOKEN}@^" <<<"${CODEARTIFACT_PYPI_URL}")
+          PIP_EXTRA_INDEX_URL=$(sed -e "s^//^//aws:${CODEARTIFACT_TOKEN}@^" <<<"${CODEARTIFACT_ENDPOINT}simple/")
 
           poetry export --format=requirements.txt --without-hashes -o requirements.txt
           poetry build --format wheel
