@@ -132,6 +132,8 @@ hvcs = "github"
 [[tool.poetry.source]]
 name = "{{ cookiecutter.aws_codeartifact_pypi_repo_name }}"
 url = "{{ cookiecutter.aws_codeartifact_pypi_repo_url }}"
+secondary = true
+default = false
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

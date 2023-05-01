@@ -23,7 +23,6 @@
   "aws_admin_role_arn": "",
   "aws_admin_role_external_id": "",
   "aws_admin_session_name": "gh-admin-{{ cookiecutter.project_name }}",
-  "aws_codeartifact": ["No", "Yes"],
   "aws_codeartifact_domain": "",
   "aws_codeartifact_domain_owner": "",
   "aws_codeartifact_pypi_repo_name": "",
