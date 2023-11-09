@@ -122,7 +122,7 @@ show_column_numbers = true
 show_error_context = true
 
 [tool.semantic_release]
-version_variable = ["src/{{cookiecutter.package_name}}/__init__.py:__static_version"]
+version_variables = ["src/{{cookiecutter.package_name}}/__init__.py:__static_version"]
 version_toml = ["pyproject.toml:tool.poetry.version"]
 commit_message = "chore(release): v{version} [skip ci]"
 build_command = "poetry build"
