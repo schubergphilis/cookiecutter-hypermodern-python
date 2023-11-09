@@ -116,7 +116,6 @@ jobs:
         if: steps.release.outputs.released == 'true'
         with:
           github_token: ${{"{{"}} secrets.GH_SEMANTIC_RELEASE_PAT {{"}}"}}
-
 {% if cookiecutter.publish_to_codeartifact == 'Yes' %}
       - name: Publish to CodeArtifact
         run: |
