@@ -118,6 +118,7 @@ jobs:
           github_token: ${{"{{"}} secrets.GH_SEMANTIC_RELEASE_PAT {{"}}"}}
 {% if cookiecutter.publish_to_codeartifact == 'Yes' %}
       - name: Publish to CodeArtifact
+        if: steps.release.outputs.released == 'true'
         run: |
           poetry config repositories.publish-target ${CODEARTIFACT_ENDPOINT}
           # For publishing to a CodeArtifact repo, the 'simple/' suffix must be **omitted**
