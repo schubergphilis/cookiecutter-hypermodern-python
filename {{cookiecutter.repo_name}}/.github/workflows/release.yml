@@ -146,7 +146,7 @@ jobs:
           (cd lambda && zip -r ../lambda-bundles/{{ cookiecutter.project_name }}-${NEW_VERSION}-py${RELEASE_PYTHON_VERSION}.zip .)
           (cd layer && zip -r ../lambda-bundles/{{ cookiecutter.project_name }}-${NEW_VERSION}-layer-py${RELEASE_PYTHON_VERSION}.zip .)
         env:
-          NEW_VERSION: ${{ steps.release.outputs.version }}
+          NEW_VERSION: ${{"{{"}} steps.release.outputs.version {{"}}"}}
 
       - name: Upload lambda bundles to S3
         if: steps.release.outputs.released == 'true'
