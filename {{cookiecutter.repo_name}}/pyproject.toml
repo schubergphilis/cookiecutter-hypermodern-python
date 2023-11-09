@@ -21,53 +21,53 @@ classifiers = [
 Changelog = "https://github.com/{{cookiecutter.github_user}}/{{cookiecutter.repo_name}}/releases"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 coloredlogs = "^15.0"
-typer = "^0.7"
+typer = "^0.9"
 
 [tool.poetry.group.pre-commit]
 optional = true
 
 [tool.poetry.group.pre-commit.dependencies]
 bandit = "^1.7"
-black = "^23.3"
+black = "^23.11"
 darglint = "^1.8"
-flake8 = "^6.0"
-flake8-bugbear = "^23.3"
+flake8 = "^6.1"
+flake8-bugbear = "^23.9"
 flake8-docstrings = "^1.7"
 flake8-rst-docstrings = "^0.3"
 isort = "^5.12"
 pep8-naming = "^0.13"
-pre-commit = "^3.2"
-pre-commit-hooks = "^4.4"
-pyupgrade = "^3.3"
+pre-commit = "^3.5"
+pre-commit-hooks = "^4.5"
+pyupgrade = "^3.15"
 
 [tool.poetry.group.tests]
 optional = true
 
 [tool.poetry.group.tests.dependencies]
-Pygments = "^2.15"
-pytest = "^7.3"
-pytest-mock = "^3.10"
-pytest-cov = "^4.0"
+Pygments = "^2.16"
+pytest = "^7.4"
+pytest-mock = "^3.12"
+pytest-cov = "^4.1"
 
 [tool.poetry.group.coverage]
 optional = true
 
 [tool.poetry.group.coverage.dependencies]
-coverage = {extras = ["toml"], version = "^7.2"}
+coverage = {extras = ["toml"], version = "^7.3"}
 
 [tool.poetry.group.mypy]
 optional = true
 
 [tool.poetry.group.mypy.dependencies]
-mypy = "^1.2"
+mypy = "^1.6"
 
 [tool.poetry.group.typeguard]
 optional = true
 
 [tool.poetry.group.typeguard.dependencies]
-typeguard = "^3.0"
+typeguard = "^4.1"
 
 [tool.poetry.group.safety]
 optional = true
@@ -79,11 +79,11 @@ safety = "^2.3"
 optional = true
 
 [tool.poetry.group.docs.dependencies]
-furo = ">=2023.3.27"
-myst-parser = "^1.0"
-sphinx = "^6.2"
+furo = ">=2023.9.10"
+myst-parser = "^2.0"
+sphinx = "^7.2"
 sphinx-autobuild = ">=2021.3.14"
-sphinx-click = "^4.4"
+sphinx-click = "^5.0"
 
 [tool.poetry.group.xdoctest]
 optional = true
@@ -124,10 +124,8 @@ show_error_context = true
 [tool.semantic_release]
 version_variable = ["src/{{cookiecutter.package_name}}/__init__.py:__static_version"]
 version_toml = ["pyproject.toml:tool.poetry.version"]
-commit_subject = "chore(release): v{version} [skip ci]"
-branch = "main"
+commit_message = "chore(release): v{version} [skip ci]"
 build_command = "poetry build"
-hvcs = "github"
 
 [[tool.poetry.source]]
 name = "{{ cookiecutter.aws_codeartifact_pypi_repo_name }}"
