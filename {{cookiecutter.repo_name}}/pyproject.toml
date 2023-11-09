@@ -1,5 +1,6 @@
 [tool.poetry]
 name = "{{cookiecutter.project_name}}"
+# DO NOT modify the version manually - it is updated by python-semantic-release.
 version = "{{cookiecutter.version}}"
 description = "{{cookiecutter.friendly_name}}"
 authors = ["{{cookiecutter.author}} <{{cookiecutter.email}}>"]
