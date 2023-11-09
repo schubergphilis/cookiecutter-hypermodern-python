@@ -100,30 +100,39 @@ jobs:
 
       - name: Configure CodeArtifact Auth for Poetry
         # This is for fetching packages from private repo. The repo URL has to be provided in the
-        # `tool.poetry.source` section of pyproject.toml
+        # `tool.poetry.source` section of pyproject.toml (and it must include the 'simple/' suffix
+        # which is required for pulling from CodeArtifact repos)
         run: |
           poetry config http-basic.{{ cookiecutter.aws_codeartifact_pypi_repo_name }} aws ${CODEARTIFACT_TOKEN}
 
-      - name: Install python-semantic-release
-        run: |
-          pip install --constraint=.github/workflows/constraints.txt python-semantic-release
-
       - name: Python Semantic Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v8
+        with:
+          github_token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
+
+      - name: Publish package distributions to GitHub Releases
+        uses: python-semantic-release/upload-to-gh-release@main
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
+
+{% if cookiecutter.publish_to_codeartifact == 'Yes' %}
+      - name: Publish to CodeArtifact
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "action@github.com"
+          poetry config repositories.publish-target ${CODEARTIFACT_ENDPOINT}
+          # For publishing to a CodeArtifact repo, the 'simple/' suffix must be **omitted**
+          poetry config http-basic.publish-target aws ${CODEARTIFACT_TOKEN}
 
-          semantic-release publish -v DEBUG -D commit_author="github-actions <action@github.com>" \
-          -D repository_url=${CODEARTIFACT_ENDPOINT}
-
-          echo "NEW_VERSION=$(semantic-release print-version --current)" >> $GITHUB_ENV
-        env:
-          GH_TOKEN: ${{"{{"}} secrets.GH_SEMANTIC_RELEASE_PAT {{"}}"}}
-          REPOSITORY_USERNAME: aws
-          REPOSITORY_PASSWORD: ${{"{{"}} env.CODEARTIFACT_TOKEN {{"}}"}}
+          poetry build
+          poetry publish -r publish-target
+{% endif -%}
 {% if cookiecutter.create_lambda_bundles == 'Yes' %}
       - name: Create lambda bundles
+        if: steps.release.outputs.released == 'true'
         run: |
+          # PIP_EXTRA_INDEX_URL is used by pip to fetch requirements from private PyPi repo,
+          # it must include the 'simple/' suffix for pulling the packages from CodeArtifact repos
           PIP_EXTRA_INDEX_URL=$(sed -e "s^//^//aws:${CODEARTIFACT_TOKEN}@^" <<<"${CODEARTIFACT_ENDPOINT}simple/")
 
           poetry export --format=requirements.txt --without-hashes -o requirements.txt
@@ -136,8 +145,11 @@ jobs:
 
           (cd lambda && zip -r ../lambda-bundles/{{ cookiecutter.project_name }}-${NEW_VERSION}-py${RELEASE_PYTHON_VERSION}.zip .)
           (cd layer && zip -r ../lambda-bundles/{{ cookiecutter.project_name }}-${NEW_VERSION}-layer-py${RELEASE_PYTHON_VERSION}.zip .)
+        env:
+          NEW_VERSION: ${{ steps.release.outputs.version }}
 
       - name: Upload lambda bundles to S3
+        if: steps.release.outputs.released == 'true'
         run: |
           export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
           $(aws sts assume-role \

@@ -28,6 +28,7 @@
   "aws_codeartifact_domain_owner": "",
   "aws_codeartifact_pypi_repo_name": "",
   "aws_codeartifact_pypi_repo_url": "",
+  "publish_to_codeartifact": ["Yes", "No"],
   "create_lambda_bundles": ["Yes", "No"],
   "aws_artifacts_s3url": ""
 }
