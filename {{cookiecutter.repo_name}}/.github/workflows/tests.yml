@@ -104,8 +104,8 @@ jobs:
           import os
           import pip
 
-          with open(os.environ["GITHUB_ENV"], mode="a") as io:
-              print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
+          with open(os.environ["GITHUB_ENV"], mode="a") as fh:
+              print(f"VIRTUALENV_PIP={pip.__version__}", file=fh)
 
       - name: Install Poetry
         run: |
@@ -128,6 +128,7 @@ jobs:
         id: pre-commit-cache
         shell: python
         run: |
+          import os
           import hashlib
           import sys
           import uuid
@@ -137,7 +138,7 @@ jobs:
           digest = hashlib.sha256(payload).hexdigest()
           result = {{ '"${{ runner.os }}-{}-{}-pre-commit".format(python, digest[:8])' }}
 
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
               print(f"{result}={result}", file=fh)
 
       - name: Restore pre-commit cache
