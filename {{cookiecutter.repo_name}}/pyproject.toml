@@ -123,11 +123,8 @@ show_error_context = true
 [tool.semantic_release]
 version_variable = ["src/{{cookiecutter.package_name}}/__init__.py:__static_version"]
 version_toml = ["pyproject.toml:tool.poetry.version"]
-commit_subject = "chore(release): v{version} [skip ci]"
-branch = "main"
+commit_message = "chore(release): v{version} [skip ci]"
 build_command = "poetry build"
-upload_to_pypi = false
-hvcs = "github"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

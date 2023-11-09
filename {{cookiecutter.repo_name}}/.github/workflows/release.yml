@@ -61,14 +61,14 @@ jobs:
         run: |
           echo "::set-output name=sha::$(git rev-parse --verify --quiet HEAD^)"
 
-      - name: Install python-semantic-release
-        run: |
-          pip install --constraint=.github/workflows/constraints.txt python-semantic-release
-
       - name: Python Semantic Release
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "action@github.com"
-          semantic-release publish -v DEBUG -D commit_author="github-actions <action@github.com>"
-        env:
-          GH_TOKEN: ${{"{{"}} secrets.GH_SEMANTIC_RELEASE_PAT {{"}}"}}
+        id: release
+        uses: python-semantic-release/python-semantic-release@v8
+        with:
+          github_token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
+
+      - name: Publish package distributions to GitHub Releases
+        uses: python-semantic-release/upload-to-gh-release@main
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
