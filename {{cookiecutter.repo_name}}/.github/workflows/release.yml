@@ -65,10 +65,10 @@ jobs:
         id: release
         uses: python-semantic-release/python-semantic-release@v8
         with:
-          github_token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
+          github_token: ${{"{{"}} secrets.GH_SEMANTIC_RELEASE_PAT {{"}}"}}
 
       - name: Publish package distributions to GitHub Releases
         uses: python-semantic-release/upload-to-gh-release@main
         if: steps.release.outputs.released == 'true'
         with:
-          github_token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
+          github_token: ${{"{{"}} secrets.GH_SEMANTIC_RELEASE_PAT {{"}}"}}
