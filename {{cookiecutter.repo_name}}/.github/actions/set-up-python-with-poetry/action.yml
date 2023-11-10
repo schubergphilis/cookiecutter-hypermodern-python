@@ -1,0 +1,37 @@
+name: Set up Python with Poetry
+description: Set up Python and poetry
+inputs:
+  python-version:
+    description: Python version
+    required: true
+  install-poetry:
+    description: Whether to also install poetry (true by default)
+    required: false
+    default: "true"
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{"{{"}} inputs.python-version {{"}}"}}
+
+    - name: Upgrade pip
+      run: |
+        pip install --constraint=.github/constraints.txt pip
+        pip --version
+
+    - name: Set pip version for virtual environments
+      shell: python
+      run: |
+        import os
+        import pip
+
+        with open(os.environ["GITHUB_ENV"], mode="a") as fh:
+            print(f"VIRTUALENV_PIP={pip.__version__}", file=fh)
+
+    - name: Install Poetry
+      if: ${{"{{"}} inputs.install-poetry == 'true' {{"}}"}}
+      run: |
+        pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+        poetry --version
