@@ -16,17 +16,14 @@ jobs:
         with:
           ref: ${{"{{"}} github.event.pull_request.head.ref {{"}}"}}
           fetch-depth: 0
-      - name: Setup python
-        uses: actions/setup-python@v4
+      - name: Set up python
+        uses: ./.github/actions/set-up-python-with-poetry
         with:
           python-version: "3.11"
-      - name: Upgrade pip
-        run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
-          pip --version
+          install-poetry: "false"
       - name: Install gitlint
         run: |
-          pip install --constraint=.github/workflows/constraints.txt gitlint
+          pip install --constraint=.github/constraints.txt gitlint
           gitlint --version
       - name: Run gitlint for all commits in the PR
         run: |
@@ -61,33 +58,14 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v3
 
-      - name: Set up Python ${{"{{"}} matrix.python {{"}}"}}
-        uses: actions/setup-python@v4
+      - name: Set up Python ${{"{{"}} matrix.python {{"}}"}} with Poetry
+        uses: ./.github/actions/set-up-python-with-poetry
         with:
           python-version: ${{"{{"}} matrix.python {{"}}"}}
 
-      - name: Upgrade pip
-        run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
-          pip --version
-
-      - name: Upgrade pip in virtual environments
-        shell: python
-        run: |
-          import os
-          import pip
-
-          with open(os.environ["GITHUB_ENV"], mode="a") as fh:
-              print(f"VIRTUALENV_PIP={pip.__version__}", file=fh)
-
-      - name: Install Poetry
-        run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
-          poetry --version
-
       - name: Install Nox
         run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
+          pipx install --pip-args=--constraint=.github/constraints.txt nox
           nox --version
 
       - name: Compute pre-commit cache key
@@ -142,24 +120,14 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Python with Poetry
+        uses: ./.github/actions/set-up-python-with-poetry
         with:
           python-version: "3.11"
 
-      - name: Upgrade pip
-        run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
-          pip --version
-
-      - name: Install Poetry
-        run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
-          poetry --version
-
       - name: Install Nox
         run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
+          pipx install --pip-args=--constraint=.github/constraints.txt nox
           nox --version
 
       - name: Download coverage data
