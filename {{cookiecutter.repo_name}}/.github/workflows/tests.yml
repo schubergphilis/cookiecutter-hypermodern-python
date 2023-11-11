@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{"{{"}} github.event.pull_request.head.ref {{"}}"}}
           fetch-depth: 0
@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{"{{"}} matrix.python {{"}}"}} with Poetry
         uses: ./.github/actions/set-up-python-with-poetry
@@ -124,7 +124,7 @@ jobs:
     needs: tests
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python with Poetry
         uses: ./.github/actions/set-up-python-with-poetry
