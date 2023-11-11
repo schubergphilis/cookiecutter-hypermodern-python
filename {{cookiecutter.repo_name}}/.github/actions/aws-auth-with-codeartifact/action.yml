@@ -11,6 +11,7 @@ runs:
         role-session-name: {{ cookiecutter.aws_oidc_session_name }}
 
     - name: Get AWS CodeArtifact Auth Token
+      shell: bash
       run: |
         export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
         $(aws sts assume-role \
@@ -35,6 +36,7 @@ runs:
         echo "CODEARTIFACT_TOKEN=${CODEARTIFACT_TOKEN}" >> $GITHUB_ENV
 
     - name: Configure CodeArtifact Auth for Poetry
+      shell: bash
       # This is for fetching packages from a private repo. The repo URL has to be provided in the
       # `tool.poetry.source` section of pyproject.toml (and it must include the 'simple/' suffix
       # which is required for pulling from CodeArtifact repos)
