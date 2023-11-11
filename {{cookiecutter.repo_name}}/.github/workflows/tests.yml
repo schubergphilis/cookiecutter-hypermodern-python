@@ -67,7 +67,7 @@ jobs:
           python-version: ${{"{{"}} matrix.python {{"}}"}}
 
       - name: Configure AWS & CodeArtifact auth
-        uses: ./.github/actions/aws-auth-with-codeartifactory
+        uses: ./.github/actions/aws-auth-with-codeartifact
 
       - name: Install Nox
         run: |

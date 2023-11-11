@@ -55,7 +55,7 @@ jobs:
           python-version: ${{"{{"}} env.RELEASE_PYTHON_VERSION {{"}}"}}
 
       - name: Configure AWS & CodeArtifact auth
-        uses: ./.github/actions/aws-auth-with-codeartifactory
+        uses: ./.github/actions/aws-auth-with-codeartifact
 
       - name: Python Semantic Release
         id: release
