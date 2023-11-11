@@ -17,6 +17,7 @@ runs:
         python-version: ${{"{{"}} inputs.python-version {{"}}"}}
 
     - name: Upgrade pip
+      shell: bash
       run: |
         pip install --constraint=.github/constraints.txt pip
         pip --version
@@ -32,6 +33,7 @@ runs:
 
     - name: Install Poetry
       if: ${{"{{"}} inputs.install-poetry == 'true' {{"}}"}}
+      shell: bash
       run: |
-        pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+        pipx install --pip-args=--constraint=.github/constraints.txt poetry
         poetry --version
