@@ -1,0 +1,42 @@
+name: Configure AWS & CodeArtifact auth
+description: Configure AWS credentials, export CodeArtifact  and configure poetry to use
+runs:
+  using: "composite"
+  steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: {{ cookiecutter.aws_region }}
+        role-to-assume: {{ cookiecutter.aws_oidc_role_arn }}
+        role-session-name: {{ cookiecutter.aws_oidc_session_name }}
+
+    - name: Get AWS CodeArtifact Auth Token
+      run: |
+        export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+        $(aws sts assume-role \
+        --role-arn {{ cookiecutter.aws_admin_role_arn }} \
+        --external-id {{ cookiecutter.aws_admin_role_external_id }} \
+        --role-session-name {{ cookiecutter.aws_admin_session_name }} \
+        --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
+        --output text))
+
+        CODEARTIFACT_ENDPOINT=$(aws codeartifact get-repository-endpoint \
+        --domain {{ cookiecutter.aws_codeartifact_domain }} \
+        --domain-owner {{ cookiecutter.aws_codeartifact_domain_owner }} \
+        --repository {{ cookiecutter.aws_codeartifact_pypi_repo_name }} \
+        --format pypi --output text)
+
+        CODEARTIFACT_TOKEN=$(aws codeartifact get-authorization-token \
+        --domain {{ cookiecutter.aws_codeartifact_domain }} \
+        --domain-owner {{ cookiecutter.aws_codeartifact_domain_owner }} \
+        --query authorizationToken --output text)
+
+        echo "CODEARTIFACT_ENDPOINT=${CODEARTIFACT_ENDPOINT}" >> $GITHUB_ENV
+        echo "CODEARTIFACT_TOKEN=${CODEARTIFACT_TOKEN}" >> $GITHUB_ENV
+
+    - name: Configure CodeArtifact Auth for Poetry
+      # This is for fetching packages from a private repo. The repo URL has to be provided in the
+      # `tool.poetry.source` section of pyproject.toml (and it must include the 'simple/' suffix
+      # which is required for pulling from CodeArtifact repos)
+      run: |
+        poetry config http-basic.{{ cookiecutter.aws_codeartifact_pypi_repo_name }} aws ${CODEARTIFACT_TOKEN}
