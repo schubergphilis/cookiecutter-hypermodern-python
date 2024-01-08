@@ -76,7 +76,6 @@ jobs:
           import os
           import hashlib
           import sys
-          import uuid
 
           python = "py{}.{}".format(*sys.version_info[:2])
           payload = sys.version.encode() + sys.executable.encode()
